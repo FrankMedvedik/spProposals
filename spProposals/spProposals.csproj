@@ -143,6 +143,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\BooleanToVisibility.cs" />
+    <Compile Include="Converters\NotBooleanToVisibility.cs" />
+    <Compile Include="Converters\RadioButtonConverter.cs" />
     <Compile Include="Entities\Client.cs" />
     <Compile Include="Entities\ProposalItem.cs" />
     <Compile Include="Entities\ProposalStatus.cs" />
@@ -160,10 +163,8 @@
     <Compile Include="Services\ProposalSvc.cs" />
     <Compile Include="spProperties.cs" />
     <Compile Include="ViewModels\CollectionViewModelBase.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ProposalsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
-    <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Views\ProposalsView.xaml.cs">
       <DependentUpon>ProposalsView.xaml</DependentUpon>
     </Compile>
@@ -213,7 +214,12 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\icon-launch-site.png" />
+    <Resource Include="Images\icon-launch-site.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\proposalSite.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

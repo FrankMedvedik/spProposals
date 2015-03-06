@@ -10,8 +10,8 @@ namespace spProposals.Services
             return new ObservableCollection<ProposalStatus>
             {
                 new ProposalStatus {Id = "All", Name = "All"},
-                new ProposalStatus {Id = "Prop", Name = "Proposal"},
-                new ProposalStatus {Id= "Arc", Name = "Archive"},
+                new ProposalStatus {Id = "Proposal", Name = "Proposal"},
+                new ProposalStatus {Id= "Archive", Name = "Archive"},
                 new ProposalStatus {Id= "Job", Name = "Job"}
             };
         }

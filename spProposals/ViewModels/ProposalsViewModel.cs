@@ -23,11 +23,12 @@ namespace spProposals.ViewModels
         {
             Proposals = await ProposalSvc.GetProposals();
             FilteredProposals = Proposals;
-            _selectedProposalId = Proposals[0].Id;
             Clients = ClientSvc.GetAllClients(Proposals);
             ProposalStati = ProposalStatusSvc.GetAll();
-            _selectedProposalStatusId = ProposalStatusSvc.GetDefault().Id;
-            _selectedClientId = ClientSvc.GetDefault().Id;
+            SelectedProposalStatusId = ProposalStatusSvc.GetDefault().Id;
+            SelectedClientId = ClientSvc.GetDefault().Id;
+
+            //SelectedProposal = Proposals[0];
 
         }
 
@@ -92,43 +93,37 @@ namespace spProposals.ViewModels
 
         private void RefreshFilteredData()
         {
-            FilterByClient();
-            FilterByStatus();
+            FilterProposals();
         }
 
-        private void FilterByClient()
+        private void FilterProposals()
         {
             var fr = new List<ProposalsItem>();
 
-            if (SelectedClientId != "All")
+            if ((SelectedClientId != "All") && (SelectedProposalStatusId != "All"))
             {
-                fr = (from fobjs in Proposals
-                    where fobjs.ClientID == SelectedClientId
-                    select fobjs).ToList();
-
-                if (FilteredProposals.Count == fr.Count())
-                    return;
-                FilteredProposals = new ObservableCollection<ProposalsItem>(fr);
+                fr = (from p in Proposals
+                    where p.ClientID == SelectedClientId
+                          && p.SiteType == SelectedProposalStatusId
+                    select p).ToList();
             }
-            else
-                FilteredProposals = Proposals;
-        }
-
-
-        private void FilterByStatus()
-        {
-            var fr = new List<ProposalsItem>();
-
-            if (SelectedProposalStatusId != "All")
+            else if ((SelectedClientId == "All") && (SelectedProposalStatusId != "All"))
             {
-                fr = (from fobjs in FilteredProposals
-                    where fobjs.SiteType == SelectedProposalStatusId
-                    select fobjs).ToList();
-
-                if (FilteredProposals.Count == fr.Count())
-                    return;
-                FilteredProposals = new ObservableCollection<ProposalsItem>(fr);
+                fr = (from p in Proposals
+                    where p.SiteType == SelectedProposalStatusId
+                    select p).ToList();
             }
+            else if ((SelectedClientId != "All") && (SelectedProposalStatusId == "All"))
+            {
+                fr = (from p in Proposals
+                    where p.ClientID == SelectedClientId
+                    select p).ToList();
+            }
+            if ((SelectedClientId == "All") && (SelectedProposalStatusId == "All"))
+            {
+                fr = Proposals.ToList();
+            }
+            FilteredProposals = new ObservableCollection<ProposalsItem>(fr);
         }
 
         #endregion
@@ -154,17 +149,15 @@ namespace spProposals.ViewModels
         #endregion
 
 
-        #region SelectedProposalId
+        #region SelectedProposal
 
-        private int _selectedProposalId = 1;
-
-
-        public int SelectedProposalId
+        private ProposalsItem _selectedProposal;
+        public ProposalsItem SelectedProposal
         {
-            get { return _selectedProposalId; }
+            get { return _selectedProposal; }
             set
             {
-                _selectedProposalId = value;
+                _selectedProposal = value;
                 NotifyPropertyChanged();
             }
         }

@@ -35,7 +35,7 @@ namespace spProposals.Services
 
             var t = await Task<IEnumerable<ProposalsItem>>.Factory.FromAsync(proposalQuery.BeginExecute,
                 proposalQuery.EndExecute, proposalDataQuery);
-            wqs = new ObservableCollection<ProposalsItem>(t.ToList());
+            wqs = new ObservableCollection<ProposalsItem>(t.ToList().OrderBy(x => x.ClientID).ThenBy(x => x.Title) );
             return wqs;
         }
 

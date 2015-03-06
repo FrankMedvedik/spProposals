@@ -5,16 +5,20 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"
     xmlns:toolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit"
+    xmlns:converters="clr-namespace:spProposals.Converters"
     mc:Ignorable="d">
-
+    <Control.Resources>
+        <converters:BooleanToVisibility x:Key="BoolToVisConverter" />
+        <converters:NotBooleanToVisibility x:Key="NotBoolToVisConverter" />
+    </Control.Resources>
     <Grid x:Name="LayoutRoot" Background="White" Margin="2" HorizontalAlignment="Left" VerticalAlignment="Top">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="10*"/>
+            <RowDefinition  Height="1*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Column="0" Grid.Row="0">
             <Grid.ColumnDefinitions>
@@ -22,14 +26,14 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Border Grid.Row="0" Grid.Column="0"  Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <StackPanel Orientation="Horizontal" >
-                <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Client" FontWeight="Bold"  Margin="6" VerticalAlignment="Center" />
                     <ComboBox Height="23" HorizontalAlignment="Left" Margin="6" 
                            Name="comboBox1" VerticalAlignment="Center" Width="100" 
                               ItemsSource="{Binding Clients, Mode=OneWay}" 
                                 SelectedValue="{Binding SelectedClientId, Mode=TwoWay}" 
-                                DisplayMemberPath="Name" SelectedValuePath="Id"/>
+                                DisplayMemberPath="Name" SelectedValuePath="Id" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="6" Visibility="Visible" HorizontalAlignment="Right"> 
                         <TextBlock FontWeight="Bold"  Margin="6" VerticalAlignment="Center" Text="Project Status" HorizontalAlignment="Left"/>
@@ -41,58 +45,53 @@
                 </StackPanel>
             </Border>
         </Grid>
-        <Border Grid.Row="1" Grid.Column="0"  BorderBrush="Black" BorderThickness="1">
-            <!--<ScrollViewer Grid.Column="0" Grid.Row="1" Margin="2" Width="Auto" Height="Auto">-->
-            <sdk:DataGrid x:Name="DGrid"  Width="auto" Height="600"  AutoGenerateColumns="False" ItemsSource="{Binding FilteredProposals}" Margin="6" SelectedItem="SelectedProposal"
-                          ToolTipService.ToolTip="BlueBerry Proposals" HorizontalAlignment="Left"  IsReadOnly="True" SelectionMode="Single" ScrollViewer.VerticalScrollBarVisibility="Auto">
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="Black" BorderThickness="1" >
+            
+            <sdk:DataGrid x:Name="DGrid"  Width="Auto" Height="1200" AutoGenerateColumns="False" 
+                          ItemsSource="{Binding FilteredProposals}" Margin="6" SelectedItem="{Binding SelectedProposal, Mode=TwoWay}"  
+                            IsReadOnly="True" SelectionMode="Single" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalAlignment="Center" > 
                 <sdk:DataGrid.Columns>
-                    <sdk:DataGridTextColumn Header="Client" Binding="{Binding ClientID}" />
-                    <sdk:DataGridTextColumn Header="Proposal Title" Binding="{Binding Title}" />
-                    <sdk:DataGridTemplateColumn Header="Details">
-                        <sdk:DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <HyperlinkButton x:Name="Edit" NavigateUri="{Binding EditUrl}" TargetName="_blank" >
-                                    <HyperlinkButton.Content>
-                                        <StackPanel Orientation="Horizontal">
-                                            <!--<Image Height="15" Width="15" Source="/spProposals;component/Images/edit-notes.png" />-->
-                                            <TextBlock  Text="..."></TextBlock>
-                                        </StackPanel>
-                                    </HyperlinkButton.Content>
-                                </HyperlinkButton>
-                            </DataTemplate>
-                        </sdk:DataGridTemplateColumn.CellTemplate>
-                    </sdk:DataGridTemplateColumn>
-                    <sdk:DataGridTemplateColumn Header="Site">
-                        <sdk:DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <HyperlinkButton x:Name="Site" NavigateUri="{Binding SiteUrl}" TargetName="_blank"  >
-                                    <HyperlinkButton.Content>
-                                        <StackPanel Orientation="Horizontal">
-                                            <!--<Image Height="15" Width="15" Source="/spProposals;component/Images/images.jpg"/>-->
-                                            <TextBlock  Text="{Binding SiteType}"></TextBlock>
-                                        </StackPanel>
-                                    </HyperlinkButton.Content>
-                                </HyperlinkButton>
-                            </DataTemplate>
-                        </sdk:DataGridTemplateColumn.CellTemplate>
-                    </sdk:DataGridTemplateColumn>
-                    <sdk:DataGridTemplateColumn Header="Make Job">
+                    <sdk:DataGridTextColumn Header="Client" Binding="{Binding ClientID}" Width="100" />
+                    <sdk:DataGridTextColumn Header="Proposal Title" Binding="{Binding Title}" Width="350" />
+                    <sdk:DataGridTextColumn Header="Status" Binding="{Binding SiteType}" Width="100" />
+                    <sdk:DataGridTemplateColumn Header="Details"  >
                         <sdk:DataGridTemplateColumn.CellTemplate >
                             <DataTemplate>
-                                <Button Name="btnJob" Margin="6" Click="btnJob_Click">Move to Existing Job</Button>
+                                <HyperlinkButton x:Name="Edit" NavigateUri="{Binding EditUrl}" TargetName="_blank"  Padding="3">
+                                    <HyperlinkButton.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Height="25" Width="25" Source="/spProposals;component/Images/edit-notes.png" ToolTipService.ToolTip="open new window to Proposal Details" />
+                                            <!--<TextBlock  Text="..."></TextBlock>-->
+                                        </StackPanel>
+                                    </HyperlinkButton.Content>
+                                </HyperlinkButton>
                             </DataTemplate>
                         </sdk:DataGridTemplateColumn.CellTemplate>
                     </sdk:DataGridTemplateColumn>
-                    <sdk:DataGridTemplateColumn Header="Archive">
-                    <sdk:DataGridTemplateColumn.CellTemplate >
-                                <DataTemplate>
-                                    <Button Name="btnArchive" Margin="6" Click="btnArchive_Click">Archive</Button>
-                        </DataTemplate>
-                    </sdk:DataGridTemplateColumn.CellTemplate>
+                    <sdk:DataGridTemplateColumn Header="Site" Width="100" >
+                        <sdk:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <HyperlinkButton x:Name="Site" NavigateUri="{Binding SiteUrl}" TargetName="_blank" Padding="3"  >
+                                    <HyperlinkButton.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Height="25" Width="30" Source="/spProposals;component/Images/proposalSite.png" ToolTipService.ToolTip="Open new window to website" />
+                                        </StackPanel>
+                                    </HyperlinkButton.Content>
+                                </HyperlinkButton>
+                            </DataTemplate>
+                        </sdk:DataGridTemplateColumn.CellTemplate>
                     </sdk:DataGridTemplateColumn>
                 </sdk:DataGrid.Columns>
             </sdk:DataGrid>
         <!--</ScrollViewer >-->
         </Border>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" 
+          Visibility="{Binding SelectedProposal.IsJob, Converter={StaticResource NotBoolToVisConverter}}"  
+                    Grid.Row="2" Grid.Column="0" >
+            <Button  Margin="6" Name="btnCopy" Click="btnCopy_Click" >Copy</Button>
+             <Button Margin="6" Name="btnJob"  Click="btnJob_Click">Move to Job</Button>
+            <Button Name="btnArchive" Margin="6" Click="btnArchive_Click">Archive</Button>
+        </StackPanel>
     </Grid>
 </UserControl>
