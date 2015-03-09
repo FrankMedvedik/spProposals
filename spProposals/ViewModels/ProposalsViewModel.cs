@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Reckner.Silverlight.SharePoint.Core.Models;
-using Reckner.Silverlight.SharePoint.Core.Services;
-using Reckner.Silverlight.SharePoint.Core.ViewModels;
-using spProposals.ServiceReference1;
+using System.Windows;
+using Microsoft.SharePoint.Client;
+using spProposals.Models;
 using spProposals.Services;
 
 namespace spProposals.ViewModels
@@ -13,56 +12,72 @@ namespace spProposals.ViewModels
     public class ProposalsViewModel : ViewModelBase
     {
         private static Uri _siteUri = new Uri(SpProperties.BlueBerryHomeUrl);
-        ServiceReference1.BlueberryDataContext _objDataContext;
-        private ClientsViewModel _vmClients = new ClientsViewModel(SpProperties.BlueBerryHomeUrl);
+        protected ClientContext spContext;
+        private ClientDictionary _clientDictionary = new ClientDictionary();
+//        private List<Proposal> _proposals = new List<Proposal>();
 
-        // sets up the 
+        public void SetProposals(List<Proposal> l)
+        {
+            Proposals.Clear();
+            foreach (var p in l)
+                Proposals.Add(p);
+        }
 
-        public ProposalsViewModel()
+        public void SetClients(List<Client> l)
+        {
+            Clients.Clear();
+            foreach (var c in l)
+            {
+                Clients.Add(c);
+            }
+            SelectedClient = Clients.FirstOrDefault(x => x.Id == "All");
+        }
+
+        public ProposalsViewModel( )
         {
             RefreshAll();
         }
 
         protected async void RefreshAll()
         {
-            Proposals = await ProposalSvc.GetProposals();
+            LoadAll();
             FilteredProposals = Proposals;
             ProposalStati = new ObservableCollection<ProposalStatus>(ProposalStatusSvc.GetAll());
-            SelectedProposalStatusId = ProposalStatusSvc.GetDefault().Id;
-            SelectedClientId = "All";
+            SelectedProposalStatus = ProposalStati.FirstOrDefault(x => x.Id == "All");
         }
 
-        public string SelectedClientId
+        private Client _selectedClient = new Client();
+        public Client SelectedClient
         {
-            get { return _vmClients.SelectedClientId; }
+            get { return _selectedClient; }
             set
             {
-               _vmClients.SelectedClientId = value;
-               NotifyPropertyChanged();
-
-                RefreshFilteredData();
-            }
-        }
-
-        private string _selectedProposalStatusId;
-        public string SelectedProposalStatusId
-        {
-            get { return _selectedProposalStatusId; }
-            set
-            {
-                _selectedProposalStatusId = value;
+                _selectedClient = value;
                 NotifyPropertyChanged();
                 RefreshFilteredData();
             }
         }
 
+        private ProposalStatus _selectedProposalStatus = new ProposalStatus();
+        public ProposalStatus SelectedProposalStatus
+        {
+            get { return _selectedProposalStatus; }
+            set
+            {
+                _selectedProposalStatus = value;
+                NotifyPropertyChanged();
+                RefreshFilteredData();
+            }
+        }
+
+        private ObservableCollection<Client> _clients = new ObservableCollection<Client>();
         public ObservableCollection<Client> Clients 
         {
 
-            get { return _vmClients.Clients; }
+            get { return _clients; }
             set
             {
-                _vmClients.Clients = value; 
+                _clients = value; 
                 NotifyPropertyChanged();
             }
         }
@@ -80,8 +95,9 @@ namespace spProposals.ViewModels
 
         #region Filters
 
-        private ObservableCollection<ProposalsItem> _filteredProposals = new ObservableCollection<ProposalsItem>();
-        public ObservableCollection<ProposalsItem> FilteredProposals
+        
+        private ObservableCollection<Proposal> _filteredProposals = new ObservableCollection<Proposal>();
+        public ObservableCollection<Proposal> FilteredProposals
         {
             get { return _filteredProposals; }
             set
@@ -93,38 +109,38 @@ namespace spProposals.ViewModels
 
         private void RefreshFilteredData()
         {
-            FilteredProposals = Proposals;
-            //FilterProposals();
+
+            FilterProposals();
         }
 
         private void FilterProposals()
         {
-            var fr = new List<ProposalsItem>();
+            var fr = new List<Proposal>();
 
-            if ((SelectedClientId != "All") && (SelectedProposalStatusId != "All"))
+            if ((SelectedClient.Id != "All") && (SelectedProposalStatus.Id != "All"))
             {
                 fr = (from p in Proposals
-                    where p.ClientID == SelectedClientId
-                          && p.SiteType == SelectedProposalStatusId
+                    where p.ClientID == SelectedClient.Id
+                          && p.SiteType == SelectedProposalStatus.Id
                     select p).ToList();
             }
-            else if ((SelectedClientId == "All") && (SelectedProposalStatusId != "All"))
+            else if ((SelectedClient.Id == "All") && (SelectedProposalStatus.Id != "All"))
             {
                 fr = (from p in Proposals
-                    where p.SiteType == SelectedProposalStatusId
+                    where p.SiteType == SelectedProposalStatus.Id
                     select p).ToList();
             }
-            else if ((SelectedClientId != "All") && (SelectedProposalStatusId == "All"))
+            else if ((SelectedClient.Id != "All") && (SelectedProposalStatus.Id == "All"))
             {
                 fr = (from p in Proposals
-                    where p.ClientID == SelectedClientId
+                    where p.ClientID == SelectedClient.Id
                     select p).ToList();
             }
-            if ((SelectedClientId == "All") && (SelectedProposalStatusId == "All"))
+            if ((SelectedClient.Id == "All") && (SelectedProposalStatus.Id == "All"))
             {
                 fr = Proposals.ToList();
             }
-            FilteredProposals = new ObservableCollection<ProposalsItem>(fr);
+            FilteredProposals = new ObservableCollection<Proposal>(fr);
         }
 
         #endregion
@@ -134,9 +150,9 @@ namespace spProposals.ViewModels
 
         #region Proposals
 
-        private ObservableCollection<ProposalsItem> _proposals = new ObservableCollection<ProposalsItem>();
+        private ObservableCollection<Proposal> _proposals = new ObservableCollection<Proposal>();
 
-        public ObservableCollection<ProposalsItem> Proposals
+        public ObservableCollection<Proposal> Proposals
         {
             get { return _proposals; }
             set
@@ -152,8 +168,8 @@ namespace spProposals.ViewModels
 
         #region SelectedProposal
 
-        private ProposalsItem _selectedProposal;
-        public ProposalsItem SelectedProposal
+        private Proposal _selectedProposal;
+        public Proposal SelectedProposal
         {
             get { return _selectedProposal; }
             set
@@ -163,6 +179,88 @@ namespace spProposals.ViewModels
             }
         }
         #endregion
+
+
+
+#region load all
+
+        private void LoadAll()
+        {
+            try
+            {
+#if DEBUG
+                spContext = new ClientContext(SpProperties.BlueBerryHomeUrl);
+#else
+                spContext = ClientContext.Current;
+#endif
+
+                Web oWebsite = spContext.Web;
+                var clientwebs = oWebsite.Webs;
+                spContext.Load(oWebsite);
+                spContext.Load(clientwebs);
+                List plist = oWebsite.Lists.GetByTitle("Proposals");
+                var camlQuery = CamlQuery.CreateAllItemsQuery();
+                ListItemCollection listItems = plist.GetItems(camlQuery);
+                spContext.Load(listItems);
+                spContext.ExecuteQueryAsync(
+                    (sender, args) =>
+                    {
+                        var clients = new List<Client>();
+                        clients.Add(new Client() { Id = "All", Name = "All" });
+                        var proposals = new List<Proposal>();
+                        foreach (Web orWebsite in clientwebs)
+                        {
+                            clients.Add(new Client
+                            {
+                                Id = orWebsite.ServerRelativeUrl.Substring(11),
+                                Name = orWebsite.Title,
+                                Url = orWebsite.ServerRelativeUrl
+                            });
+                        }
+                        _clientDictionary.Initialize(clients);
+                        _clientDictionary.Add("", new Client() { Id = "", Name = "" });
+                        foreach (ListItem i in listItems)
+                        {
+
+                            var c = _clientDictionary.LookupClient((string)i["ClientID"]);
+
+                           // var v = (string)i["ProposalID"];
+                           // v += " " + i["JobNumber"] != null ? i["JobNumber"] : "";
+                           // v += " " + (string)i["Title"];
+                           //// MessageBox.Show(v.ToString());
+
+                            proposals.Add(new Proposal()
+                            {
+                                 Id = (string) i["ProposalID"],
+                                 JobNumber = (string)i["JobNumber"],
+                                 Title = (string)i["Title"],
+                                 ClientID = c.Id,
+                                 ClientName = c.Name
+                            });
+                        }
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+
+                            this.SetProposals(proposals);
+                            this.SetClients(clients);
+
+                        });
+                    }, (sender, args) =>
+                    {
+
+                    });
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+#endregion
+
+
+
+
     }
 
 }

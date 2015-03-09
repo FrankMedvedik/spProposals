@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using spProposals.ViewModels;
 
-namespace spProposals.ServiceReference1
+namespace spProposals.Models
 {
-    public partial class ProposalsItem : ViewModelBase
+    public class Proposal 
     {
+        public string ProposalID { get; set; }
+        public string ClientID { get; set; }
+        public string ClientName { get; set; }
+        public string JobNumber { get; set; }
+        public string Id { get; set; }
+
         public String SiteUrl
         {
             get
@@ -26,7 +31,6 @@ namespace spProposals.ServiceReference1
                 return workUrl;
             }
         }
-
         public String SiteType
         {
             get
@@ -56,11 +60,13 @@ namespace spProposals.ServiceReference1
                 
             }
         }
+
+ 
         public Boolean IsJob
         {
-                 get { return !string.IsNullOrEmpty(_JobNumber); }
+                 get { return !string.IsNullOrEmpty(JobNumber); }
         }
-        public String ClientTitle { get; set; }
+        public String Title { get; set; }
 
     }
 

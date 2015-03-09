@@ -14,7 +14,7 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
+            <RowDefinition Height="2*" />
             <RowDefinition Height="10*"/>
             <RowDefinition  Height="1*"/>
         </Grid.RowDefinitions>
@@ -24,19 +24,19 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Border Grid.Row="0" Grid.Column="0"  Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock Text="Client" FontWeight="Bold"  Margin="6" VerticalAlignment="Center" />
-                    <ComboBox Height="23" HorizontalAlignment="Left" Margin="6" 
-                           Name="cbxClients" VerticalAlignment="Center" Width="100" 
-                              SelectedValue="{Binding _SelectedClientId, Mode=TwoWay}" 
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                    <StackPanel Orientation="Horizontal"  >
+                    <TextBlock Text="Client" FontWeight="Bold"  Margin="6"  />
+                    <ComboBox  HorizontalAlignment="Left" Margin="6" 
+                           Name="cbxClients" Width="250" ItemsSource="{Binding Clients, Mode=OneWay}" 
+                              SelectedValue="{Binding SelectedClient, Mode=TwoWay}" 
                                 DisplayMemberPath="Name" SelectedValuePath="Id" />
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="6" Visibility="Visible" HorizontalAlignment="Right"> 
-                        <TextBlock FontWeight="Bold"  Margin="6" VerticalAlignment="Center" Text="Project Status" HorizontalAlignment="Left"/>
-                        <ComboBox Margin="5" VerticalAlignment="Center"  Visibility="Visible" HorizontalAlignment="Right"
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >  
+                        <TextBlock FontWeight="Bold"  Margin="6" Text="Project Status" HorizontalAlignment="Right"/>
+                        <ComboBox Margin="5" HorizontalAlignment="Right"
                       Name="proposalStateComboBox" Width="100"  ItemsSource="{Binding ProposalStati, Mode=OneWay}"  
-                                SelectedValue="{Binding SelectedProposalStatusId, Mode=TwoWay}" 
+                                SelectedValue="{Binding SelectedProposalStatus, Mode=TwoWay}" 
                                 DisplayMemberPath="Name" SelectedValuePath="Id"/>
                     </StackPanel>
                 </StackPanel>
@@ -49,7 +49,7 @@
                             IsReadOnly="True" SelectionMode="Single" 
                           ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalAlignment="Center" > 
                 <sdk:DataGrid.Columns>
-                    <sdk:DataGridTextColumn Header="Client" Binding="{Binding ClientID}" Width="100" />
+                    <sdk:DataGridTextColumn Header="Client" Binding="{Binding ClientName}" Width="250" />
                     <sdk:DataGridTextColumn Header="Proposal Title" Binding="{Binding Title}" Width="350" />
                     <sdk:DataGridTextColumn Header="Status" Binding="{Binding SiteType}" Width="100" />
                     <sdk:DataGridTemplateColumn Header="Details"  >
@@ -58,7 +58,8 @@
                                 <HyperlinkButton x:Name="Edit" NavigateUri="{Binding EditUrl}" TargetName="_blank"  Padding="3">
                                     <HyperlinkButton.Content>
                                         <StackPanel Orientation="Horizontal">
-                                            <Image Height="25" Width="25" Source="/spProposals;component/Images/edit-notes.png" ToolTipService.ToolTip="open new window to Proposal Details" />
+                                            <Image Height="25" Width="25" Source="/spProposals;component/Images/edit-notes.png" 
+                                                   ToolTipService.ToolTip="open new window to Proposal Details" />
                                             <!--<TextBlock  Text="..."></TextBlock>-->
                                         </StackPanel>
                                     </HyperlinkButton.Content>
@@ -72,7 +73,8 @@
                                 <HyperlinkButton x:Name="Site" NavigateUri="{Binding SiteUrl}" TargetName="_blank" Padding="3"  >
                                     <HyperlinkButton.Content>
                                         <StackPanel Orientation="Horizontal">
-                                            <Image Height="25" Width="30" Source="/spProposals;component/Images/proposalSite.png" ToolTipService.ToolTip="Open new window to website" />
+                                            <Image Height="25" Width="30" Source="/spProposals;component/Images/proposalSite.png" 
+                                                   ToolTipService.ToolTip="Open new window to website" />
                                         </StackPanel>
                                     </HyperlinkButton.Content>
                                 </HyperlinkButton>

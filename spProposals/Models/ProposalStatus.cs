@@ -1,4 +1,4 @@
-namespace spProposals.Entities
+namespace spProposals.Models
 {
     public class ProposalStatus
     {
