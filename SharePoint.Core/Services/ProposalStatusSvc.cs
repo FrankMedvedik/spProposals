@@ -1,13 +1,13 @@
-﻿using System.Collections.ObjectModel;
-using spProposals.Entities;
+﻿using System.Collections.Generic;
+using Reckner.Silverlight.SharePoint.Core.Models;
 
-namespace spProposals.Services
+namespace Reckner.Silverlight.SharePoint.Core.Services
 {
     public static class ProposalStatusSvc
     {
-        public static ObservableCollection<ProposalStatus> GetAll()
+        public static List<ProposalStatus> GetAll()
         {
-            return new ObservableCollection<ProposalStatus>
+            return new List<ProposalStatus>
             {
                 new ProposalStatus {Id = "All", Name = "All"},
                 new ProposalStatus {Id = "Proposal", Name = "Proposal"},

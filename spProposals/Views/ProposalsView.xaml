@@ -4,11 +4,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"
-    xmlns:toolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit"
     xmlns:converters="clr-namespace:spProposals.Converters"
     mc:Ignorable="d">
     <Control.Resources>
-        <converters:BooleanToVisibility x:Key="BoolToVisConverter" />
         <converters:NotBooleanToVisibility x:Key="NotBoolToVisConverter" />
     </Control.Resources>
     <Grid x:Name="LayoutRoot" Background="White" Margin="2" HorizontalAlignment="Left" VerticalAlignment="Top">
@@ -30,9 +28,8 @@
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Text="Client" FontWeight="Bold"  Margin="6" VerticalAlignment="Center" />
                     <ComboBox Height="23" HorizontalAlignment="Left" Margin="6" 
-                           Name="comboBox1" VerticalAlignment="Center" Width="100" 
-                              ItemsSource="{Binding Clients, Mode=OneWay}" 
-                                SelectedValue="{Binding SelectedClientId, Mode=TwoWay}" 
+                           Name="cbxClients" VerticalAlignment="Center" Width="100" 
+                              SelectedValue="{Binding _SelectedClientId, Mode=TwoWay}" 
                                 DisplayMemberPath="Name" SelectedValuePath="Id" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="6" Visibility="Visible" HorizontalAlignment="Right"> 

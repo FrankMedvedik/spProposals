@@ -8,7 +8,7 @@ using spProposals.ServiceReference1;
 
 namespace spProposals.Services
 {
-    public class ProposalSvc
+    public static class ProposalSvc
     {
         private static ServiceReference1.BlueberryDataContext _objDataContext =
             new BlueberryDataContext(new Uri(SpProperties.BlueBerryProposalsUrl));
@@ -27,7 +27,7 @@ namespace spProposals.Services
             return wqs;
         }
 
-        public static async Task<ObservableCollection<ProposalsItem>> GetProposals(string clientId)
+        public static async Task<ObservableCollection<ProposalsItem>> GetClientProposals(string clientId)
         {
             var wqs = new ObservableCollection<ProposalsItem>();
             var proposalDataQuery = _objDataContext.Proposals.Where(p => p.ClientID == clientId);
@@ -38,18 +38,6 @@ namespace spProposals.Services
             wqs = new ObservableCollection<ProposalsItem>(t.ToList().OrderBy(x => x.ClientID).ThenBy(x => x.Title) );
             return wqs;
         }
-
-
-        public ProposalsItem GetSelected()
-        {
-            return new ProposalsItem()
-            {
-                ClientID = "CAMSOU",
-                Id = 20,
-                Title = "this proposal"
-            };
-        }
-
 
     }
 

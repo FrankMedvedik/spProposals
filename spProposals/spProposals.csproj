@@ -146,9 +146,8 @@
     <Compile Include="Converters\BooleanToVisibility.cs" />
     <Compile Include="Converters\NotBooleanToVisibility.cs" />
     <Compile Include="Converters\RadioButtonConverter.cs" />
-    <Compile Include="Entities\Client.cs" />
-    <Compile Include="Entities\ProposalItem.cs" />
-    <Compile Include="Entities\ProposalStatus.cs" />
+    <Compile Include="Extentions\ProposalItem.cs" />
+    <Compile Include="Extentions\ProposalStatus.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -158,10 +157,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.datasvcmap</DependentUpon>
     </Compile>
-    <Compile Include="Services\ClientSvc.cs" />
-    <Compile Include="Services\ProposalStatusSvc.cs" />
     <Compile Include="Services\ProposalSvc.cs" />
     <Compile Include="spProperties.cs" />
+    <Compile Include="ViewModels\ClientProposalViewModel.cs" />
     <Compile Include="ViewModels\CollectionViewModelBase.cs" />
     <Compile Include="ViewModels\ProposalsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
@@ -214,12 +212,13 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\icon-launch-site.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Images\proposalSite.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\proposalSite.png" />
+    <ProjectReference Include="..\SharePoint.Core\Reckner.Silverlight.SharePoint.Core.csproj">
+      <Project>{1e62ff8f-1602-4982-8745-e73a00998de6}</Project>
+      <Name>Reckner.Silverlight.SharePoint.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

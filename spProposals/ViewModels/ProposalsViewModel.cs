@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using spProposals.Entities;
+using Reckner.Silverlight.SharePoint.Core.Models;
+using Reckner.Silverlight.SharePoint.Core.Services;
+using Reckner.Silverlight.SharePoint.Core.ViewModels;
 using spProposals.ServiceReference1;
 using spProposals.Services;
+
 namespace spProposals.ViewModels
 {
     public class ProposalsViewModel : ViewModelBase
     {
         private static Uri _siteUri = new Uri(SpProperties.BlueBerryHomeUrl);
         ServiceReference1.BlueberryDataContext _objDataContext;
+        private ClientsViewModel _vmClients = new ClientsViewModel(SpProperties.BlueBerryHomeUrl);
 
         // sets up the 
 
@@ -23,23 +27,19 @@ namespace spProposals.ViewModels
         {
             Proposals = await ProposalSvc.GetProposals();
             FilteredProposals = Proposals;
-            Clients = ClientSvc.GetAllClients(Proposals);
-            ProposalStati = ProposalStatusSvc.GetAll();
+            ProposalStati = new ObservableCollection<ProposalStatus>(ProposalStatusSvc.GetAll());
             SelectedProposalStatusId = ProposalStatusSvc.GetDefault().Id;
-            SelectedClientId = ClientSvc.GetDefault().Id;
-
-            //SelectedProposal = Proposals[0];
-
+            SelectedClientId = "All";
         }
 
-        private string _selectedClientId;
         public string SelectedClientId
         {
-            get { return _selectedClientId; }
+            get { return _vmClients.SelectedClientId; }
             set
             {
-                _selectedClientId= value;
-                NotifyPropertyChanged();
+               _vmClients.SelectedClientId = value;
+               NotifyPropertyChanged();
+
                 RefreshFilteredData();
             }
         }
@@ -56,13 +56,13 @@ namespace spProposals.ViewModels
             }
         }
 
-        private ObservableCollection<Client> _clients = new ObservableCollection<Client>();
-        public ObservableCollection<Client> Clients
+        public ObservableCollection<Client> Clients 
         {
-            get { return _clients; }
+
+            get { return _vmClients.Clients; }
             set
             {
-                _clients = value;
+                _vmClients.Clients = value; 
                 NotifyPropertyChanged();
             }
         }
@@ -93,7 +93,8 @@ namespace spProposals.ViewModels
 
         private void RefreshFilteredData()
         {
-            FilterProposals();
+            FilteredProposals = Proposals;
+            //FilterProposals();
         }
 
         private void FilterProposals()

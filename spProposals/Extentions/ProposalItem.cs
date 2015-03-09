@@ -6,9 +6,7 @@ namespace spProposals.ServiceReference1
 {
     public partial class ProposalsItem : ViewModelBase
     {
-        private string _siteType;
-
-        public string SiteUrl
+        public String SiteUrl
         {
             get
             {
@@ -29,7 +27,7 @@ namespace spProposals.ServiceReference1
             }
         }
 
-        public string SiteType
+        public String SiteType
         {
             get
             {
@@ -50,7 +48,7 @@ namespace spProposals.ServiceReference1
             }
         }
 
-        public string EditUrl
+        public String EditUrl
         {
             get
             {
@@ -58,10 +56,11 @@ namespace spProposals.ServiceReference1
                 
             }
         }
-             public Boolean IsJob
+        public Boolean IsJob
         {
                  get { return !string.IsNullOrEmpty(_JobNumber); }
         }
+        public String ClientTitle { get; set; }
 
     }
 
