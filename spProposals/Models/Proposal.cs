@@ -5,12 +5,11 @@ namespace spProposals.Models
 {
     public class Proposal 
     {
-        public string ProposalID { get; set; }
         public string ClientID { get; set; }
         public string ClientName { get; set; }
         public string JobNumber { get; set; }
-        public string Id { get; set; }
-
+        public Int32 Id { get; set; }
+        public string ProposalId { get; set; }
         public String SiteUrl
         {
             get
@@ -22,7 +21,7 @@ namespace spProposals.Models
                 }
                 else if (SiteType == "Proposal")
                 {
-                    workUrl = SpProperties.BlueBerryHomeUrl + Regex.Replace(ClientID, @"\W|_", string.Empty) + "/" + Regex.Replace(ProposalID, @"\W|_", string.Empty); 
+                    workUrl = SpProperties.BlueBerryHomeUrl + Regex.Replace(ClientID, @"\W|_", string.Empty) + "/" + Regex.Replace(ProposalId, @"\W|_", string.Empty); 
                 }
                 else
                 {
@@ -40,7 +39,7 @@ namespace spProposals.Models
                 {
                     siteType = "Job";
                 }
-                else if (ClientID != null && ProposalID != null)
+                else if (ClientID != null && ProposalId != null)
                 {
                     siteType = "Proposal";
                 }

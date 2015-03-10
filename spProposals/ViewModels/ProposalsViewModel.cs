@@ -30,7 +30,7 @@ namespace spProposals.ViewModels
             {
                 Clients.Add(c);
             }
-            SelectedClient = Clients.FirstOrDefault(x => x.Id == "All");
+            SelectedClientId = Clients.FirstOrDefault(x => x.Id == "All").Id;
         }
 
         public ProposalsViewModel( )
@@ -42,29 +42,30 @@ namespace spProposals.ViewModels
         {
             LoadAll();
             FilteredProposals = Proposals;
-            ProposalStati = new ObservableCollection<ProposalStatus>(ProposalStatusSvc.GetAll());
-            SelectedProposalStatus = ProposalStati.FirstOrDefault(x => x.Id == "All");
+            ProposalStati =
+                new ObservableCollection<ProposalStatus>(ProposalStatusSvc.GetAll().OrderBy(x => x.Name).ToList());
+            SelectedProposalStatusId = ProposalStati.FirstOrDefault(x => x.Id == "All").Id;
         }
 
-        private Client _selectedClient = new Client();
-        public Client SelectedClient
+        private string _selectedClientId;
+        public string SelectedClientId
         {
-            get { return _selectedClient; }
+            get { return _selectedClientId; }
             set
             {
-                _selectedClient = value;
+                _selectedClientId = value;
                 NotifyPropertyChanged();
                 RefreshFilteredData();
             }
         }
 
-        private ProposalStatus _selectedProposalStatus = new ProposalStatus();
-        public ProposalStatus SelectedProposalStatus
+        private string _selectedProposalStatusId;
+        public string SelectedProposalStatusId
         {
-            get { return _selectedProposalStatus; }
+            get { return _selectedProposalStatusId; }
             set
             {
-                _selectedProposalStatus = value;
+                _selectedProposalStatusId = value;
                 NotifyPropertyChanged();
                 RefreshFilteredData();
             }
@@ -117,26 +118,26 @@ namespace spProposals.ViewModels
         {
             var fr = new List<Proposal>();
 
-            if ((SelectedClient.Id != "All") && (SelectedProposalStatus.Id != "All"))
+            if ((SelectedClientId != "All") && (SelectedProposalStatusId != "All"))
             {
                 fr = (from p in Proposals
-                    where p.ClientID == SelectedClient.Id
-                          && p.SiteType == SelectedProposalStatus.Id
+                    where p.ClientID == SelectedClientId
+                          && p.SiteType == SelectedProposalStatusId
                     select p).ToList();
             }
-            else if ((SelectedClient.Id == "All") && (SelectedProposalStatus.Id != "All"))
+            else if ((SelectedClientId == "All") && (SelectedProposalStatusId != "All"))
             {
                 fr = (from p in Proposals
-                    where p.SiteType == SelectedProposalStatus.Id
+                    where p.SiteType == SelectedProposalStatusId
                     select p).ToList();
             }
-            else if ((SelectedClient.Id != "All") && (SelectedProposalStatus.Id == "All"))
+            else if ((SelectedClientId != "All") && (SelectedProposalStatusId == "All"))
             {
                 fr = (from p in Proposals
-                    where p.ClientID == SelectedClient.Id
+                    where p.ClientID == SelectedClientId
                     select p).ToList();
             }
-            if ((SelectedClient.Id == "All") && (SelectedProposalStatus.Id == "All"))
+            if ((SelectedClientId == "All") && (SelectedProposalStatusId == "All"))
             {
                 fr = Proposals.ToList();
             }
@@ -206,7 +207,7 @@ namespace spProposals.ViewModels
                     (sender, args) =>
                     {
                         var clients = new List<Client>();
-                        clients.Add(new Client() { Id = "All", Name = "All" });
+                        clients.Add(new Client() { Id = "All", Name = "<All>" });
                         var proposals = new List<Proposal>();
                         foreach (Web orWebsite in clientwebs)
                         {
@@ -224,14 +225,16 @@ namespace spProposals.ViewModels
 
                             var c = _clientDictionary.LookupClient((string)i["ClientID"]);
 
-                           // var v = (string)i["ProposalID"];
-                           // v += " " + i["JobNumber"] != null ? i["JobNumber"] : "";
-                           // v += " " + (string)i["Title"];
+                            //var v = (string)i["ProposalID"];
+                            //v += " " + (string)i["JobNumber"] ;
+                            //v += " " + (string)i["ID"];
+                            //v += " " + (string)i["Title"];
                            //// MessageBox.Show(v.ToString());
 
                             proposals.Add(new Proposal()
                             {
-                                 Id = (string) i["ProposalID"],
+                                 ProposalId = (string) i["ProposalID"],
+                                 Id = (Int32)i["ID"],
                                  JobNumber = (string)i["JobNumber"],
                                  Title = (string)i["Title"],
                                  ClientID = c.Id,
@@ -241,8 +244,8 @@ namespace spProposals.ViewModels
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
 
-                            this.SetProposals(proposals);
-                            this.SetClients(clients);
+                            this.SetProposals(proposals.OrderBy(x => x.ClientName).ThenBy(x=>x.Title).ToList());
+                            this.SetClients(clients.OrderBy(x => x.Name).ToList());
 
                         });
                     }, (sender, args) =>

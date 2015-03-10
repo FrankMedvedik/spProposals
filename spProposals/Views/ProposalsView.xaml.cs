@@ -22,7 +22,6 @@ namespace spProposals.Views
 
         private void btnJob_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            cbxClients.ItemsSource = _vm.Clients;
             // MessageBox.Show("This will perform the same action as 'convert to a job' on the proposal web page. This only works with proposals not jobs");
             MessageBox.Show(_vm.Clients.Count.ToString());
         }

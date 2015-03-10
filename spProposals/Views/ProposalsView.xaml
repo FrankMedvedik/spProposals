@@ -28,15 +28,16 @@
                     <StackPanel Orientation="Horizontal"  >
                     <TextBlock Text="Client" FontWeight="Bold"  Margin="6"  />
                     <ComboBox  HorizontalAlignment="Left" Margin="6" 
-                           Name="cbxClients" Width="250" ItemsSource="{Binding Clients, Mode=OneWay}" 
-                              SelectedValue="{Binding SelectedClient, Mode=TwoWay}" 
-                                DisplayMemberPath="Name" SelectedValuePath="Id" />
+                                ItemsSource="{Binding Path=Clients, Mode=OneWay}" 
+                      SelectedValue="{Binding Path=SelectedClientId, Mode=TwoWay}" 
+                      DisplayMemberPath="Name" 
+                      SelectedValuePath="Id" />
                 </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >  
                         <TextBlock FontWeight="Bold"  Margin="6" Text="Project Status" HorizontalAlignment="Right"/>
                         <ComboBox Margin="5" HorizontalAlignment="Right"
-                      Name="proposalStateComboBox" Width="100"  ItemsSource="{Binding ProposalStati, Mode=OneWay}"  
-                                SelectedValue="{Binding SelectedProposalStatus, Mode=TwoWay}" 
+                      Name="proposalStateComboBox" Width="100"  ItemsSource="{Binding Path=ProposalStati, Mode=OneWay}"  
+                                SelectedValue="{Binding Path=SelectedProposalStatusId, Mode=TwoWay}" 
                                 DisplayMemberPath="Name" SelectedValuePath="Id"/>
                     </StackPanel>
                 </StackPanel>

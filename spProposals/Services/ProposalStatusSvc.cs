@@ -9,7 +9,7 @@ namespace spProposals.Services
         {
             return new List<ProposalStatus>
             {
-                new ProposalStatus {Id = "All", Name = "All"},
+                new ProposalStatus {Id = "All", Name = "<All>"},
                 new ProposalStatus {Id = "Proposal", Name = "Proposal"},
                 new ProposalStatus {Id= "Archive", Name = "Archive"},
                 new ProposalStatus {Id= "Job", Name = "Job"}
@@ -18,7 +18,7 @@ namespace spProposals.Services
 
         public static ProposalStatus GetDefault()
         {
-            return new ProposalStatus { Id = "All", Name = "All" };
+            return new ProposalStatus { Id = "All", Name = "<All>" };
         }
     }
 }
