@@ -9,42 +9,48 @@ using spProposals.Services;
 
 namespace spProposals.ViewModels
 {
-    public class ProposalsViewModel : ViewModelBase
+    public class ProposalsViewModel : CollectionViewModelBase
     {
         private static Uri _siteUri = new Uri(SpProperties.BlueBerryHomeUrl);
-        protected ClientContext spContext;
+        private ClientContext _spContext;
         private ClientDictionary _clientDictionary = new ClientDictionary();
 //        private List<Proposal> _proposals = new List<Proposal>();
 
-        public void SetProposals(List<Proposal> l)
+        public void SetProposals(IEnumerable<Proposal> l)
         {
             Proposals.Clear();
             foreach (var p in l)
                 Proposals.Add(p);
         }
 
-        public void SetClients(List<Client> l)
+        public void SetClients(IEnumerable<Client> l)
         {
+            
             Clients.Clear();
             foreach (var c in l)
             {
                 Clients.Add(c);
             }
-            SelectedClientId = Clients.FirstOrDefault(x => x.Id == "All").Id;
+            // only set this on the first load filter after that 
+            if (String.IsNullOrEmpty(SelectedClientId))
+                SelectedClientId = Clients.FirstOrDefault(x => x.Id == "All").Id;
+
         }
 
         public ProposalsViewModel( )
         {
+            StartAutoRefresh(120);
             RefreshAll();
-        }
-
-        protected async void RefreshAll()
-        {
-            LoadAll();
             FilteredProposals = Proposals;
             ProposalStati =
                 new ObservableCollection<ProposalStatus>(ProposalStatusSvc.GetAll().OrderBy(x => x.Name).ToList());
             SelectedProposalStatusId = ProposalStati.FirstOrDefault(x => x.Id == "All").Id;
+            
+        }
+
+        protected override void RefreshAll(object sender, EventArgs e)
+        {
+            LoadAll();
         }
 
         private string _selectedClientId;
@@ -190,20 +196,20 @@ namespace spProposals.ViewModels
             try
             {
 #if DEBUG
-                spContext = new ClientContext(SpProperties.BlueBerryHomeUrl);
+                _spContext = new ClientContext(SpProperties.BlueBerryHomeUrl);
 #else
-                spContext = ClientContext.Current;
+                _spContext = ClientContext.Current;
 #endif
 
-                Web oWebsite = spContext.Web;
+                Web oWebsite = _spContext.Web;
                 var clientwebs = oWebsite.Webs;
-                spContext.Load(oWebsite);
-                spContext.Load(clientwebs);
+                _spContext.Load(oWebsite);
+                _spContext.Load(clientwebs);
                 List plist = oWebsite.Lists.GetByTitle("Proposals");
                 var camlQuery = CamlQuery.CreateAllItemsQuery();
                 ListItemCollection listItems = plist.GetItems(camlQuery);
-                spContext.Load(listItems);
-                spContext.ExecuteQueryAsync(
+                _spContext.Load(listItems);
+                _spContext.ExecuteQueryAsync(
                     (sender, args) =>
                     {
                         var clients = new List<Client>();
@@ -238,7 +244,8 @@ namespace spProposals.ViewModels
                                  JobNumber = (string)i["JobNumber"],
                                  Title = (string)i["Title"],
                                  ClientID = c.Id,
-                                 ClientName = c.Name
+                                 ClientName = c.Name,
+                                 ArchiveDate = (DateTime?)i["ArchiveDate"]
                             });
                         }
                         Deployment.Current.Dispatcher.BeginInvoke(() =>

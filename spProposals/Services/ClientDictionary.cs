@@ -7,6 +7,7 @@ namespace spProposals.Services
     {
         public void Initialize(List<Client> clients)
         {
+            Clear();
             foreach (var c in clients)
             {
                 Add(c.Id, c);

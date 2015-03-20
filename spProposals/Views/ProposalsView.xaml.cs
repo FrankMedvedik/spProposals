@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Browser;
 using System.Windows.Controls;
-using Microsoft.SharePoint.Client;
-using spProposals.Models;
-using spProposals.Services;
 using spProposals.ViewModels;
 namespace spProposals.Views
 {
@@ -28,7 +25,10 @@ namespace spProposals.Views
 
         private void btnArchive_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            MessageBox.Show(@"This will move the proposal to the client/archive/year folder for example: Blueberry\scj\Archive\2015\ProposalName. The proposal will still show up in the proposals list but as 'Archived'. The name will stay the same. This action works only with proposals not jobs");
+            var workUrl = @SpProperties.BlueBerryHomeUrl + @"SitePages/ArchivePage.aspx?ClientId=" + _vm.SelectedProposal.ClientID + "&ProposalID=" + _vm.SelectedProposal.ProposalId + "&ProposalsItemId=" + _vm.SelectedProposal.Id; ;
+            //MessageBox.Show(@"This will move " + workUrl + " to the " + _vm.SelectedProposal.ClientID +  "/archive/year folder");
+            HtmlPage.Window.Navigate(new Uri(workUrl, UriKind.Absolute), "_blank");
+
         }
 
         private void btnCopy_Click(object sender, System.Windows.RoutedEventArgs e)
