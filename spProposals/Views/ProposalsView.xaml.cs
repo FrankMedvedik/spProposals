@@ -25,8 +25,11 @@ namespace spProposals.Views
 
         private void btnArchive_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            var workUrl = @SpProperties.BlueBerryHomeUrl + @"SitePages/ArchivePage.aspx?ClientId=" + _vm.SelectedProposal.ClientID + "&ProposalID=" + _vm.SelectedProposal.ProposalId + "&ProposalsItemId=" + _vm.SelectedProposal.Id; ;
+
+            var workUrl = @SpProperties.BlueBerryHomeUrl + @"SitePages/ArchivePage.aspx?ClientId=" + _vm.SelectedProposal.ClientSiteName +
+                "&ProposalID=" + _vm.SelectedProposal.ProposalId + "&ProposalsItemId=" + _vm.SelectedProposal.Id; ;
             //MessageBox.Show(@"This will move " + workUrl + " to the " + _vm.SelectedProposal.ClientID +  "/archive/year folder");
+
             HtmlPage.Window.Navigate(new Uri(workUrl, UriKind.Absolute), "_blank");
 
         }

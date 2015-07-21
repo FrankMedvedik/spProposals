@@ -5,7 +5,25 @@ namespace spProposals.Models
 {
     public class Proposal 
     {
-        public string ClientID { get; set; }
+        private string _clientId;
+
+        public string ClientID
+        {
+            get
+            {
+                return _clientId;
+            }
+            set { _clientId = value; }
+        }
+
+        public string ClientSiteName
+        {
+            get
+            {
+                return  (ClientID == "SC JOH") ? "SC%20JOH" : ClientID;
+            }
+        }
+
         public string ClientName { get; set; }
         public string JobNumber { get; set; }
         public Int32 Id { get; set; }
@@ -22,11 +40,13 @@ namespace spProposals.Models
                         workUrl = SpProperties.WorkUrl + JobNumber.Substring(0, 4) + "/" + JobNumber.Substring(5);
                         break;
                     case "Archive":
-                        workUrl = SpProperties.BlueBerryHomeUrl + Regex.Replace(ClientID, @"\W|_", string.Empty) + "/Archive/"+ ArchiveDate.Value.Year +"/"+ Regex.Replace(ProposalId, @"\W|_", string.Empty);
+                        //workUrl = SpProperties.BlueBerryHomeUrl + Regex.Replace(ClientSiteName, @"\W|_", string.Empty) + "/Archive/" + ArchiveDate.Value.Year + "/" + Regex.Replace(ProposalId, @"\W|_", string.Empty);
+                        workUrl = SpProperties.BlueBerryHomeUrl + ClientSiteName + "/Archive/" + ArchiveDate.Value.Year + "/" + Regex.Replace(ProposalId, @"\W|_", string.Empty);
+
                         break;
                     case "Proposal":
-                        workUrl = SpProperties.BlueBerryHomeUrl + Regex.Replace(ClientID, @"\W|_", string.Empty) + "/" +
-                                  Regex.Replace(ProposalId, @"\W|_", string.Empty);
+                        //workUrl = SpProperties.BlueBerryHomeUrl + Regex.Replace(ClientSiteName, @"\W|_", string.Empty) + "/" +Regex.Replace(ProposalId, @"\W|_", string.Empty);
+                        workUrl = SpProperties.BlueBerryHomeUrl + ClientSiteName + "/" + Regex.Replace(ProposalId, @"\W|_", string.Empty);
                         break;
                     default:
                         workUrl = "";
